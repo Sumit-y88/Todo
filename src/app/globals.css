@@ -1,0 +1,196 @@
+@import "tailwindcss";
+
+/* ─── Neo-Brutalism Design Tokens ─── */
+@theme inline {
+  /* Paper & ink */
+  --color-bru: #f4efe4;                 /* page background — warm paper */
+  --color-bru-surface: #ffffff;         /* card / raised surfaces */
+  --color-bru-well: #eae2d2;            /* inset wells (inputs, tracks) */
+  --color-bru-ink: #17140f;             /* near-black ink (text & borders) */
+  --color-bru-muted: #6b6357;           /* softer body text */
+
+  /* Saturated sticker accents */
+  --color-bru-primary: #ff5a5f;         /* coral red */
+  --color-bru-primary-deep: #e84449;
+  --color-bru-lime: #b9e633;            /* lime */
+  --color-bru-yellow: #ffd43b;          /* yellow */
+  --color-bru-blue: #5c7cfa;            /* indigo blue */
+  --color-bru-blue-deep: #4764de;
+  --color-bru-purple: #b78af1;          /* purple */
+  --color-bru-red: #ff3b30;             /* destructive red */
+  --color-bru-danger: #17140f;          /* solid black destructive */
+
+  /* Hard, no-blur offset shadows */
+  --shadow-bru-sm: 3px 3px 0 var(--color-bru-ink);
+  --shadow-bru: 5px 5px 0 var(--color-bru-ink);
+  --shadow-bru-lg: 8px 8px 0 var(--color-bru-ink);
+  --shadow-bru-xl: 12px 12px 0 var(--color-bru-ink);
+  --shadow-bru-inset: inset 3px 3px 0 rgba(23, 20, 15, 0.18), inset -3px -3px 0 rgba(255, 255, 255, 0.55);
+
+  /* Fonts */
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+
+  /* Motion */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ─── Base ─── */
+body {
+  background-color: var(--color-bru);
+  color: var(--color-bru-ink);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-bru-ink);
+  color: var(--color-bru-yellow);
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bru);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-bru-ink);
+  border: 3px solid var(--color-bru);
+}
+
+/* ─── Brutalist surfaces ─── */
+.bru-card {
+  background: var(--color-bru-surface);
+  border: 2px solid var(--color-bru-ink);
+  box-shadow: var(--shadow-bru);
+}
+.bru-card-sm {
+  background: var(--color-bru-surface);
+  border: 2px solid var(--color-bru-ink);
+  box-shadow: var(--shadow-bru-sm);
+}
+.bru-card-lg {
+  background: var(--color-bru-surface);
+  border: 3px solid var(--color-bru-ink);
+  box-shadow: var(--shadow-bru-lg);
+}
+.bru-well {
+  background: var(--color-bru-well);
+  border: 2px solid var(--color-bru-ink);
+  box-shadow: var(--shadow-bru-inset);
+}
+
+/* Press interaction for brutalist controls */
+.bru-press {
+  transition: box-shadow 0.15s ease, transform 0.1s ease, background-color 0.15s ease;
+}
+.bru-press:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--color-bru-ink);
+}
+
+/* Clickable chips / icon buttons */
+.bru-chip {
+  background: var(--color-bru-surface);
+  border: 2px solid var(--color-bru-ink);
+  box-shadow: var(--shadow-bru-sm);
+  transition: box-shadow 0.15s ease, transform 0.1s ease, background-color 0.15s ease;
+}
+.bru-chip:hover:not(:disabled) {
+  box-shadow: var(--shadow-bru);
+  transform: translate(-1px, -1px);
+}
+.bru-chip:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--color-bru-ink);
+}
+
+/* Cursor pointer for interactive chips */
+button:not(:disabled),
+[role="button"] {
+  cursor: pointer;
+}
+
+/* ─── Checkbox pop animation ─── */
+@keyframes check-pop {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes check-ring {
+  0% { box-shadow: 0 0 0 0 var(--color-bru-lime); }
+  70% { box-shadow: 0 0 0 8px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+.animate-check-pop {
+  animation: check-pop 0.3s var(--ease-spring) forwards;
+}
+.animate-check-ring {
+  animation: check-ring 0.5s ease-out forwards;
+}
+
+/* ─── Modal backdrop ─── */
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes scale-in {
+  0% { opacity: 0; transform: scale(0.94) translateY(10px) rotate(-0.5deg); }
+  100% { opacity: 1; transform: scale(1) translateY(0) rotate(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.15s ease-out forwards;
+}
+.animate-scale-in {
+  animation: scale-in 0.22s var(--ease-spring) forwards;
+}
+
+/* ─── Toast transitions ─── */
+@keyframes toast-in {
+  0% { transform: translateY(12px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+@keyframes toast-out {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(12px); opacity: 0; }
+}
+
+.animate-toast-in {
+  animation: toast-in 0.3s var(--ease-spring) forwards;
+}
+.animate-toast-out {
+  animation: toast-out 0.22s ease-in forwards;
+}
+
+/* ─── Skeleton shimmer ─── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-bru-well) 25%,
+    var(--color-bru-surface) 50%,
+    var(--color-bru-well) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* ─── Marquee (neo-brutalist ticker band) ─── */
+@keyframes bru-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-bru-marquee {
+  animation: bru-marquee 28s linear infinite;
+}
+.animate-bru-marquee:hover {
+  animation-play-state: paused;
+}
