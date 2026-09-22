@@ -11,16 +11,19 @@ import {
 export async function POST() {
     try {
         const cookieStore = await cookies();
-        const refreshToken = cookieStore.get("refreshToken")?.value;
+        // A cookie with the new path "/" and a legacy cookie with path
+        // "/api/auth" can both arrive as "refreshToken" — try each until
+        // one verifies so sessions from before the path change keep working.
+        const refreshTokens = cookieStore
+            .getAll()
+            .filter((cookie) => cookie.name === "refreshToken")
+            .map((cookie) => cookie.value);
 
-        if (!refreshToken) {
-            return NextResponse.json(
-                { error: "Refresh token is missing" },
-                { status: 401 }
-            );
+        let decoded: { userId: string } | null = null;
+        for (const token of refreshTokens) {
+            decoded = verifyRefreshToken(token);
+            if (decoded?.userId) break;
         }
-
-        const decoded = verifyRefreshToken(refreshToken);
 
         if (!decoded || !decoded.userId) {
             return NextResponse.json(
@@ -65,12 +68,22 @@ export async function POST() {
             path: "/",
         });
 
-        // Rotate refreshToken cookie (7 days)
+        // Rotate refreshToken cookie (7 days) — path "/" so middleware can
+        // see it and keep the user signed in between access-token expiries
         response.cookies.set("refreshToken", newRefreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
             maxAge: 60 * 60 * 24 * 7,
+            path: "/",
+        });
+
+        // Clear legacy refresh cookie scoped to /api/auth
+        response.cookies.set("refreshToken", "", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 0,
             path: "/api/auth",
         });
 

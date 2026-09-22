@@ -67,6 +67,15 @@ export async function POST(req: Request) {
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
             maxAge: 60 * 60 * 24 * 7,
+            path: "/",
+        });
+
+        // Clear legacy refresh cookie scoped to /api/auth (pre-path-change sessions)
+        response.cookies.set("refreshToken", "", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 0,
             path: "/api/auth",
         });
 
