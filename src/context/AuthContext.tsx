@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 import type { User } from "@/lib/types";
 import { apiGetMe, apiLogin, apiLogout } from "@/lib/api-client";
 import { useToast } from "@/context/ToastContext";
@@ -83,6 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Logout
   const logout = useCallback(async () => {
     try {
+      await signOut({ redirect: false });
       await apiLogout();
     } catch {
       // Even if the API call fails, clear client state

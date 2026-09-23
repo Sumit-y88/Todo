@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
+import OAuthButtons from "@/components/auth/OAuthButtons";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -75,6 +76,7 @@ export default function LoginForm() {
       <Button type="submit" loading={loading} className="w-full mt-2">
         Sign In
       </Button>
+      <OAuthButtons callbackUrl={searchParams.get("callbackUrl") || "/"} />
     </form>
   );
 }

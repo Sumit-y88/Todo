@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 export interface IUser extends mongoose.Document {
     name: string;
     email: string;
-    password: string;
+    password?: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -23,7 +23,6 @@ const userSchema = new mongoose.Schema<IUser>({
     },
     password: {
         type: String,
-        required: true,
         select: false,
     }
 

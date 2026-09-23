@@ -2,11 +2,17 @@ import { cookies, headers } from "next/headers";
 import connectDB from "@/lib/db";
 import User, { IUser } from "@/models/User";
 import { verifyAccessToken } from "@/lib/jwt";
+import { auth } from "@/auth";
 
 /**
  * Extracts and verifies the user ID from either the HTTP-only cookie or Authorization header.
  */
 export async function getUserIdFromToken(): Promise<string | null> {
+    const session = await auth();
+    if (session?.user?.id) {
+        return session.user.id;
+    }
+
     // 1. Check cookies first
     const cookieStore = await cookies();
     let token = cookieStore.get("accessToken")?.value;

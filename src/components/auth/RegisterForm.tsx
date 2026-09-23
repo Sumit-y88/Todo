@@ -7,6 +7,7 @@ import { apiRegister } from "@/lib/api-client";
 import { useToast } from "@/context/ToastContext";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
+import OAuthButtons from "@/components/auth/OAuthButtons";
 
 export default function RegisterForm() {
   const [name, setName] = useState("");
@@ -82,6 +83,7 @@ export default function RegisterForm() {
       <Button type="submit" loading={loading} className="w-full mt-2">
         Create Account
       </Button>
+      <OAuthButtons />
     </form>
   );
 }
