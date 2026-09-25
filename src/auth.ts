@@ -25,9 +25,16 @@ export const { auth, handlers } = NextAuth({
       return true;
     },
     async jwt({ token, user }) {
-      if (user?.email) {
+      const email = user?.email || token?.email;
+      if (!token.userId && email) {
         await connectDB();
-        const dbUser = await User.findOne({ email: user.email });
+        let dbUser = await User.findOne({ email });
+        if (!dbUser) {
+          dbUser = await User.create({
+            name: user?.name?.trim() || token?.name?.trim() || email.split("@")[0],
+            email,
+          });
+        }
         if (dbUser) token.userId = dbUser._id.toString();
       }
 

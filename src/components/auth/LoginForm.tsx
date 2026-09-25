@@ -42,8 +42,8 @@ export default function LoginForm() {
     try {
       await login(email, password);
       showToast("Welcome back! 🎉", "success");
-      const callbackUrl = searchParams.get("callbackUrl") || "/";
-      router.push(callbackUrl);
+      const callbackUrl = searchParams.get("callbackUrl") || "/todos";
+      window.location.href = callbackUrl;
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Login failed";
@@ -76,7 +76,7 @@ export default function LoginForm() {
       <Button type="submit" loading={loading} className="w-full mt-2">
         Sign In
       </Button>
-      <OAuthButtons callbackUrl={searchParams.get("callbackUrl") || "/"} />
+      <OAuthButtons callbackUrl={searchParams.get("callbackUrl") || "/todos"} />
     </form>
   );
 }

@@ -11,12 +11,12 @@ const providers: { id: Provider; label: string }[] = [
   { id: "github", label: "Continue with GitHub" },
 ];
 
-export default function OAuthButtons({ callbackUrl = "/" }: { callbackUrl?: string }) {
+export default function OAuthButtons({ callbackUrl = "/todos" }: { callbackUrl?: string }) {
   const [loadingProvider, setLoadingProvider] = useState<Provider | null>(null);
 
   const handleSignIn = async (provider: Provider) => {
     setLoadingProvider(provider);
-    await signIn(provider, { callbackUrl });
+    await signIn(provider, { redirectTo: callbackUrl, callbackUrl });
   };
 
   return (

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import type { Todo, TodoFilter } from "@/lib/types";
+import gsap from "gsap";
 import {
   apiGetTodos,
   apiCreateTodo,
@@ -62,26 +63,8 @@ export default function TodoList() {
   }, [showToast]);
 
   useEffect(() => {
-    let cancelled = false;
-    apiGetTodos()
-      .then(({ todos: data }) => {
-        if (!cancelled) setTodos(data);
-      })
-      .catch((err) => {
-        if (!cancelled) {
-          showToast(
-            err instanceof Error ? err.message : "Failed to load your tasks",
-            "error"
-          );
-        }
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [showToast]);
+    loadTodos();
+  }, [loadTodos]);
 
   const counts = useMemo(
     () => ({
@@ -101,6 +84,18 @@ export default function TodoList() {
   const progress = counts.all
     ? Math.round((counts.completed / counts.all) * 100)
     : 0;
+
+  const listRef = useRef<HTMLUListElement>(null);
+
+  useEffect(() => {
+    if (!loading && filteredTodos.length > 0 && listRef.current) {
+      gsap.fromTo(
+        listRef.current.querySelectorAll(".todo-item-card"),
+        { y: 12, opacity: 0 },
+        { y: 0, opacity: 1, stagger: 0.05, duration: 0.3, ease: "power2.out" }
+      );
+    }
+  }, [loading, filter, filteredTodos.length]);
 
   // ─── Mutations ───
   const handleCreate = async (data: { title: string; description?: string }) => {
@@ -261,7 +256,7 @@ export default function TodoList() {
           </p>
         </div>
       ) : (
-        <ul className="flex flex-col gap-4">
+        <ul ref={listRef} className="flex flex-col gap-4">
           {filteredTodos.map((todo) => (
             <li key={todo._id}>
               <TodoItem

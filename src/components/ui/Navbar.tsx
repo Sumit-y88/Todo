@@ -75,7 +75,15 @@ export default function Navbar() {
           </div>
         )}
         {user && (
-          <div className="relative" ref={dropdownRef}>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/todos"
+              className="bru-press hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-black text-bru-ink bg-bru-yellow border-2 border-bru-ink shadow-[var(--shadow-bru-sm)] hover:bg-bru-lime"
+            >
+              <span>TASKS</span>
+              <span className="font-extrabold">→</span>
+            </Link>
+            <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
               className="
@@ -122,8 +130,9 @@ export default function Navbar() {
               </div>
             )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
+    </div>
     </nav>
   );
 }

@@ -42,7 +42,7 @@ export default function TodoItem({
   };
 
   return (
-    <div className="group bru-card hover:shadow-[var(--shadow-bru-lg)] hover:-translate-x-px hover:-translate-y-px rounded-lg p-4 sm:p-5 transition-all duration-150 flex items-start gap-4">
+    <div className="todo-item-card group bru-card hover:shadow-[var(--shadow-bru-lg)] hover:-translate-x-px hover:-translate-y-px rounded-lg p-4 sm:p-5 transition-all duration-150 flex items-start gap-4">
       {/* Toggle */}
       <button
         onClick={handleToggle}

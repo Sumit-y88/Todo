@@ -28,8 +28,15 @@ export async function POST(req: Request) {
 
         const user = await User.findOne({ email }).select("+password");
 
-        if (!user || !user.password) {
+        if (!user) {
             return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+        }
+
+        if (!user.password) {
+            return NextResponse.json(
+                { error: "This account was created using Google or GitHub. Please sign in with your social account." },
+                { status: 401 }
+            );
         }
 
         const isMatched = await bcrypt.compare(password, user.password);

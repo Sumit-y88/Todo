@@ -9,8 +9,15 @@ import { auth } from "@/auth";
  */
 export async function getUserIdFromToken(): Promise<string | null> {
     const session = await auth();
-    if (session?.user?.id) {
-        return session.user.id;
+    if (session?.user) {
+        if (session.user.id && /^[0-9a-fA-F]{24}$/.test(session.user.id)) {
+            return session.user.id;
+        }
+        if (session.user.email) {
+            await connectDB();
+            const dbUser = await User.findOne({ email: session.user.email });
+            if (dbUser) return dbUser._id.toString();
+        }
     }
 
     // 1. Check cookies first
@@ -38,6 +45,19 @@ export async function getUserIdFromToken(): Promise<string | null> {
  * Retrieves the full user document (excluding password) for the currently authenticated user.
  */
 export async function getCurrentUser(): Promise<IUser | null> {
+    const session = await auth();
+    if (session?.user) {
+        await connectDB();
+        if (session.user.id && /^[0-9a-fA-F]{24}$/.test(session.user.id)) {
+            const user = await User.findById(session.user.id);
+            if (user) return user;
+        }
+        if (session.user.email) {
+            const user = await User.findOne({ email: session.user.email });
+            if (user) return user;
+        }
+    }
+
     const userId = await getUserIdFromToken();
     if (!userId) {
         return null;
